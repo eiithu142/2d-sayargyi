@@ -35,7 +35,7 @@
       var currentHour = currentTime.getHours();
       var currentMinutes = currentTime.getMinutes();
       
-      if ((currentHour === 18 && currentMinutes === 36) || currentHour < 11 || currentHour > 24) {
+      if ((currentHour === 18 && currentMinutes === 40) || currentHour < 11 || currentHour > 24) {
         clearInterval(interval); // Stop updating numbers at 16:04
         saveNumber(); // Automatically save the stopped number
       } else {
