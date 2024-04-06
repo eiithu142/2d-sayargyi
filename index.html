@@ -7,19 +7,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<h1>2D Sayargyi  </h1>
+<h1>2D BOSS  </h1>
 
     
 
     
 
-  <h5> <div id="number-display">01</div>
-    <div id="saved-number" class="hidden">
-        <span> Today 12:01 PM : </span><span id="saved-number-value"></span>
+  <h5> <div id="number-display"></div>
+    <div id="saved-number" >
+        
     </div></h5>
 <body>
-    
-  
+    <div class="time">
+    <span> Today 12:01 PM : </span><span id="saved-number-value"></span>
+</div>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
     var numberDisplay = document.getElementById("number-display");
@@ -34,7 +35,7 @@
       var currentHour = currentTime.getHours();
       var currentMinutes = currentTime.getMinutes();
       
-      if ((currentHour === 17 && currentMinutes === 00) || currentHour < 16 || currentHour > 16) {
+      if ((currentHour === 17 && currentMinutes === 20) || currentHour < 11 || currentHour > 24) {
         clearInterval(interval); // Stop updating numbers at 16:04
         saveNumber(); // Automatically save the stopped number
       } else {
@@ -68,12 +69,12 @@
       var currentMinutes = currentTime.getMinutes();
       var timeUntilNextUpdate;
   
-      if (currentHour < 16 || (currentHour === 16 && currentMinutes < 41)) {
+      if (currentHour < 17 || (currentHour === 17 && currentMinutes < 11)) {
         // Calculate time until 16:06 if the current time is before 16:06
-        timeUntilNextUpdate = (16 - currentHour - 1) * 1 + (6 - currentMinutes) * 1;
+        timeUntilNextUpdate = (17 - currentHour - 1) * 1 + (11 - currentMinutes) * 1;
       } else {
         // Calculate time until 16:06 if the current time is after 16:06
-        timeUntilNextUpdate = (23 - currentHour + 16) * 1 + (6 - currentMinutes) * 1;
+        timeUntilNextUpdate = (24 - currentHour + 17) * 1 + (11 - currentMinutes) * 1;
       }
   
       return timeUntilNextUpdate;
@@ -91,9 +92,7 @@
 
   // Sample data for payment numbers
   var paymentNumbers = {
-    "00": "$10",
-    "01": "$20",
-    "02": "$15",
+   
     // Add more payment numbers as needed
   };
 
@@ -163,13 +162,13 @@
     }
     #number-display{
         
-        padding-bottom: 50px;
+        padding-bottom: 10px;
         font-size: 60px;
         align-items: center;
         justify-content: center;
         display: grid;
         animation-name: animate;
-        animation-duration: 100s;
+        animation-duration: 1100s;
         animation-play-state: running;
 
         }
@@ -207,8 +206,13 @@
         }
         
         #saved-number{
+            
 
             background-color: aqua;
+        }
+        .time{
+            padding-left: 20%;
+            
         }
 </style>
 </html>
