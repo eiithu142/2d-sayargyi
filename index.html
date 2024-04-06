@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<h1>2D BOSS  </h1>
+<h1>2D Sayargyi  </h1>
 
     
 
@@ -34,7 +34,7 @@
       var currentHour = currentTime.getHours();
       var currentMinutes = currentTime.getMinutes();
       
-      if ((currentHour === 16 && currentMinutes === 43) || currentHour < 16 || currentHour > 16) {
+      if ((currentHour === 17 && currentMinutes === 00) || currentHour < 16 || currentHour > 16) {
         clearInterval(interval); // Stop updating numbers at 16:04
         saveNumber(); // Automatically save the stopped number
       } else {
