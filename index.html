@@ -1,129 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Live 2-Digit Number</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<h1>2D SaYarGyi</h1>
-<body>
-  <div id="number-display">00</div>
-  <div id="ampm-display"></div>
-  <div id="saved-number-container">
-    <div id="saved-number">Number: </div>
-    <div id="saved-time">Time: </div>
-  </div>
-  <script >
-    document.addEventListener("DOMContentLoaded", function() {
-  var numberDisplay = document.getElementById("number-display");
-  var ampmDisplay = document.getElementById("ampm-display");
-  var savedNumber = document.getElementById("saved-number");
-  var savedTime = document.getElementById("saved-time");
-  
-  var stopTimes = [{hour: 12, minute: 1}, {hour: 16, minute: 1}];
-  var interval; // Variable to store the interval ID
-
-  // Function to update the displayed number every minute
-  function updateNumber() {
-    var currentTime = new Date();
-    var currentHour = currentTime.getHours();
-    var currentMinutes = currentTime.getMinutes();
-    
-    // Check if the current time matches any of the stop times
-    for (var i = 0; i < stopTimes.length; i++) {
-      if (currentHour === stopTimes[i].hour && currentMinutes === stopTimes[i].minute) {
-        clearInterval(interval); // Stop updating numbers
-        saveNumber(); // Automatically save the stopped number
-        restartNumber(); // Restart the number after it's stopped
-        return;
-      } 
-    }
-
-    // Generate a random number between 0 and 99
-    var randomNumber = Math.floor(Math.random() * 100);
-    // Format the number with leading zeros
-    var formattedNumber = randomNumber.toString().padStart(2, "0");
-    // Update the displayed number
-    numberDisplay.textContent = formattedNumber;
-
-    // Update AM/PM display
-    if (currentHour >= 12) {
-      ampmDisplay.textContent = "PM";
-    } else {
-      ampmDisplay.textContent = "AM";
-    }
-  }
-
-  // Function to save the current number and time
-  function saveNumber() {
-    var currentNumber = numberDisplay.textContent;
-    var currentTime = new Date();
-    var savedTimeString = "Time: " + currentTime.toLocaleTimeString();
-    savedNumber.textContent = "Today Number: " + currentNumber; // Display the saved number
-    savedTime.textContent = savedTimeString; // Display the saved time
-  }
-
-  // Function to restart the number after it's stopped
-  function restartNumber() {
-    interval = setInterval(updateNumber, 1000); // Update number every minute
-  }
-
-  // Start the live number update
-  interval = setInterval(updateNumber, 2000); // Update number every minute
-});
-
-  </script>
-</body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2-Digit Number Table</title>
 <style>
-  body{
-    background-color: rosybrown;
-  }
-    #number-display {
-      background-color: aqua;
-      width: 100px;
-      height: 100px;
-      color: brown;
-      font-family: sans-serif;
-  font-size: 60px;
-  padding-left: 6%;
-  padding-top: 6%;
-  margin: auto;
-  margin-top: 50px;
-}
-h1{margin: auto;
-        width: auto;
-        margin-top: -2px;
-        height: 70px;
-        align-items: center;
-        justify-content: center;
-        display: grid;
-        background-color:orange;
+    body {
+        background-color:greenyellow;
+        font-family: Arial, sans-serif;
+        text-align: center;
     }
-    
-#ampm-display {
-  font-size: 30px;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 10px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    td {
+        cursor: pointer;
+    }
+    #balance {
+        margin-left: -5%;
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+    #history1 {
+        margin-top: 20px;
+        text-align: left;
+    }
+    #number-display {
+        color: red;
+  font-size: 48px;
+  font-weight: bold;
   text-align: center;
+  margin-top: -50px;
 }
 
-#saved-number-container {
-  font-size: 20px;
+#saved-history-container {
   margin-top: 20px;
   text-align: center;
 }
 
-#saved-number {
-  margin-bottom: 20px;
-  
-  font-size: 30px;
-  margin-right: 80%;
+#saved-history {
+  font-size: 24px;
 }
 
-#saved-time {
-  margin-top: 30px;
-  font-size: 30px;
-  margin-right: 80%
+#history-list {
+  font-size: 18px;
+  margin-top: 10px;
 }
-
 </style>
+</head>
+<body>
+<h1>2-Digit Number</h1>
+<div id="balance">Balance: $<span id="balanceAmount">0</span></div>
+<div id="number-display">0</div>
+<table>
+    
+    <tbody id="numberTableBody"></tbody>
+</table>
+<div id="history1">
+    <h2>Your History</h2>
+    <ul id="historyList1"></ul>
+
+</div>
+<div id="saved-history-container">
+    <div id="saved-history">Today Lucky number:</div>
+    <div id="history-list"></div>
+  </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    var numberDisplay = document.getElementById("number-display");
+    var historyList = document.getElementById("history-list");
+    
+    var stopTimes = [{hour: 9, minute: 53}, {hour: 9, minute: 55}];
+    var history = JSON.parse(localStorage.getItem("history")) || [];
+  
+    // Function to update the displayed number every 6 seconds
+    function updateNumber() {
+      var currentTime = new Date();
+      var currentHour = currentTime.getHours();
+      var currentMinute = currentTime.getMinutes();
+      var currentSecond = currentTime.getSeconds();
+      
+      // Check if the current time matches any of the stop times
+      for (var i = 0; i < stopTimes.length; i++) {
+        if (currentHour === stopTimes[i].hour && currentMinute === stopTimes[i].minute && currentSecond === 0) {
+          saveNumber(); // Automatically save the stopped number
+          return;
+        }
+      }
+  
+      // Generate a random number between 0 and 99
+      var randomNumber = Math.floor(Math.random() * 100);
+      // Format the number with leading zeros
+      var formattedNumber = randomNumber.toString().padStart(2, "0");
+      // Update the displayed number
+      numberDisplay.textContent = formattedNumber;
+    }
+  
+    // Function to save the current number and time
+    function saveNumber() {
+      var currentTime = new Date();
+      var savedTime = currentTime.toLocaleTimeString();
+      var currentNumber = numberDisplay.textContent;
+      history.push({ number: currentNumber, time: savedTime });
+      if (history.length > 2) {
+        history.shift(); // Remove the oldest entry if there are more than 2
+      }
+      localStorage.setItem("history", JSON.stringify(history));
+      displayHistory(); // Display the updated history
+    }
+  
+    // Function to display the saved history
+    function displayHistory() {
+      historyList.innerHTML = ""; // Clear the previous history
+      for (var i = 0; i < history.length; i++) {
+        var entry = document.createElement("div");
+        entry.textContent = "Number: " + history[i].number + ", Time: " + history[i].time;
+        historyList.appendChild(entry);
+      }
+    }
+  
+    // Display initial history on page load
+    displayHistory();
+  
+    // Start the live number update
+    setInterval(updateNumber, 6000); // Update number every 6 seconds
+  });
+
+
+    let balance = parseInt(localStorage.getItem('balance')) || 0;
+    let transactionHistory = JSON.parse(localStorage.getItem('transactionHistory')) || [];
+
+    function updateBalance() {
+        document.getElementById('balanceAmount').textContent = balance;
+    }
+
+    function updateTransactionHistory() {
+        const historyList = document.getElementById('historyList1');
+        historyList.innerHTML = '';
+        transactionHistory.forEach(transaction => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `Number: ${transaction.number}, Money: ${transaction.money}, Time: ${transaction.timestamp}`;
+            historyList1.appendChild(listItem);
+        });
+    }
+
+    function saveDataToHistory(number, money) {
+        const timestamp = new Date().toLocaleString();
+        transactionHistory.push({ number: number, money: money, timestamp: timestamp });
+        localStorage.setItem('transactionHistory', JSON.stringify(transactionHistory));
+    }
+
+    function handleClick(number) {
+        const money = parseInt(prompt(`Choose money for number ${number}:`));
+        if (!isNaN(money)) {
+            if (money > balance) {
+                alert("Balance not enough!");
+            } else {
+                balance -= money;
+                updateBalance();
+                saveDataToHistory(number, money);
+                updateTransactionHistory();
+                localStorage.setItem('balance', balance);
+            }
+        }
+    }
+
+    function generateTwoDigitTable() {
+        const numberTableBody = document.getElementById('numberTableBody');
+        for (let i = 0; i < 10; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < 10; j++) {
+                const number = (i * 10 + j).toString().padStart(2, '0');
+                const cell = document.createElement('td');
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = number;
+                link.addEventListener('click', () => handleClick(number));
+                cell.appendChild(link);
+                row.appendChild(cell);
+            }
+            numberTableBody.appendChild(row);
+        }
+    }
+
+    // Generate the number table
+    generateTwoDigitTable();
+
+    // Display initial balance and transaction history
+    updateBalance();
+    updateTransactionHistory();
+    
+    setTimeout(clearHistory, 1000); // 1 hour in milliseconds (3600000)
+
+</script>
+</body>
 </html>
