@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live 2-Digit Number</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="number-display">0</div>
+  <div id="saved-history-container">
+    <div id="saved-history">Saved History:</div>
+    <div id="history-list"></div>
+  </div>
+  <script>document.addEventListener("DOMContentLoaded", function() {
+    var numberDisplay = document.getElementById("number-display");
+    var historyList = document.getElementById("history-list");
+    
+    var stopTimes = [{hour: 10, minute: 23}, {hour: 10, minute: 30}];
+    var history = JSON.parse(localStorage.getItem("history")) || [];
+  
+    // Function to update the displayed number every 6 seconds
+    function updateNumber() {
+      var currentTime = new Date();
+      var currentHour = currentTime.getHours();
+      var currentMinute = currentTime.getMinutes();
+      var currentSecond = currentTime.getSeconds();
+      
+      // Check if the current time matches any of the stop times
+      for (var i = 0; i < stopTimes.length; i++) {
+        if (currentHour === stopTimes[i].hour && currentMinute === stopTimes[i].minute && currentSecond === 0) {
+          saveNumber(); // Automatically save the stopped number
+          return;
+        }
+      }
+  
+      // Generate a random number between 0 and 99
+      var randomNumber = Math.floor(Math.random() * 100);
+      // Format the number with leading zeros
+      var formattedNumber = randomNumber.toString().padStart(2, "0");
+      // Update the displayed number
+      numberDisplay.textContent = formattedNumber;
+    }
+  
+    // Function to save the current number and time
+    function saveNumber() {
+      var currentTime = new Date();
+      var savedTime = currentTime.toLocaleTimeString();
+      var currentNumber = numberDisplay.textContent;
+      history.push({ number: currentNumber, time: savedTime });
+      if (history.length > 2) {
+        history.shift(); // Remove the oldest entry if there are more than 2
+      }
+      localStorage.setItem("history", JSON.stringify(history));
+      displayHistory(); // Display the updated history
+    }
+  
+    // Function to display the saved history
+    function displayHistory() {
+      historyList.innerHTML = ""; // Clear the previous history
+      for (var i = 0; i < history.length; i++) {
+        var entry = document.createElement("div");
+        entry.textContent = "Number: " + history[i].number + ", Time: " + history[i].time;
+        historyList.appendChild(entry);
+      }
+    }
+  
+    // Display initial history on page load
+    displayHistory();
+  
+    // Start the live number update
+    setInterval(updateNumber, 1000); // Update number every 6 seconds
+  });
+  </script>
+</body>
+<style>#number-display {
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 50px;
+}
+
+#saved-history-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#saved-history {
+  font-size: 24px;
+}
+
+#history-list {
+  font-size: 18px;
+  margin-top: 10px;
+}
+</style>
+</html>
