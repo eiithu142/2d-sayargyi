@@ -136,7 +136,7 @@
   });
 
 
-    let balance = parseInt(localStorage.getItem('balance')) || 11110;
+    let balance = parseInt(localStorage.getItem('balance')) || 0;
     let transactionHistory = JSON.parse(localStorage.getItem('transactionHistory')) || [];
 
     function updateBalance() {
